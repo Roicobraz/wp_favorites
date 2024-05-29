@@ -25,11 +25,11 @@ Pour choisir l'affichage du post nous avons la possibilité de passer par le con
 _Si aucune paramètre n'est entré alors le content sera pris comme paramètre_
 
 Dans le cas où il y a la nécessité de modifier l'affichage des posts dans la page, il faut modifié directement dans la méthode ``save_archive`` dans _favorites.php_ des lignes 344 à 348.  
-``$code_html .= $this->getFav_msg_title();  
-$code_html .= $this->getFav_msg_thumbnail();  
-$code_html .= $this->getSc();  
-$code_html .= $this->getFav_msg_content();  
-code_html .= $this->getFav_msg_link();``
+``$code_html .= $this->getFav_msg_title();``  
+$code_html .= $this->getFav_msg_thumbnail();``  
+$code_html .= $this->getSc();``  
+$code_html .= $this->getFav_msg_content();``  
+code_html .= $this->getFav_msg_link();``  
 _La fonctionnalité seras plus simplifié dans le V1.2_
 
 ### Bouton d'ajout/suppression de favoris
