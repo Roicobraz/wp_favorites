@@ -1,7 +1,7 @@
 # Ajout et suppression de post favoris sous Wordpress.
 > [!NOTE]
-> V1.0
-> 29/05/2024
+> V1.0 - 
+> 29/05/2024 - 
 > Roicobraz
 
 _Développé en **PHP 7.4** avec Wordpress **6.5.3** et Advanced Custom Fields PRO **6.3.0.1**_
