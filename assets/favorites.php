@@ -341,6 +341,7 @@ abstract class favorite extends depedence
 				{ 
 					if ($idpost != '')
 					{
+						// Si besoin modifiez le code si dessous ceci est l'affichage dans la page des favoris
 						$code_html .= $this->getFav_msg_title();
 						$code_html .= $this->getFav_msg_thumbnail();
 						$code_html .= $this->getSc();	
