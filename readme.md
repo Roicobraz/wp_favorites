@@ -21,17 +21,15 @@ Le style des titre des posts passe par les méthodes :
 - ``setFav_msg_title_class`` cela permet d'ajouter des class aux titres
 - ``setFav_msg_title_height`` cela permet de définir de quelle taille est la balise <hx>
 
-Pour choisir l'affichage du post nous avons la possibilité de passer par le content ou l'excerpt avec ``setFav_msg_content_type`` en entrant comme paramètre l'un ou l'autre. 
+Pour choisir l'affichage du post nous avons la possibilité de passer par le content ou l'excerpt avec ``setFav_msg_content_type`` en entrant comme paramètre l'un ou l'autre.  
 _Si aucune paramètre n'est entré alors le content sera pris comme paramètre_
 
-Dans le cas où il y a la nécessité de modifier l'affichage des posts dans la page, il faut modifié directement dans la méthode ``save_archive`` dans _favorites.php_ des lignes 344 à 348.
-``						
-$code_html .= $this->getFav_msg_title();
-$code_html .= $this->getFav_msg_thumbnail();
-$code_html .= $this->getSc();	
-$code_html .= $this->getFav_msg_content();
-code_html .= $this->getFav_msg_link();
-``
+Dans le cas où il y a la nécessité de modifier l'affichage des posts dans la page, il faut modifié directement dans la méthode ``save_archive`` dans _favorites.php_ des lignes 344 à 348.  
+``$code_html .= $this->getFav_msg_title();``  
+``$code_html .= $this->getFav_msg_thumbnail();``  
+``$code_html .= $this->getSc();``  
+``$code_html .= $this->getFav_msg_content();``  
+``$code_html .= $this->getFav_msg_link();``  
 _La fonctionnalité seras plus simplifié dans le V1.2_
 
 ### Bouton d'ajout/suppression de favoris
