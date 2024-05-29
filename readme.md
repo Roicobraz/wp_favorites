@@ -1,8 +1,4 @@
 # Ajout et suppression de post favoris sous Wordpress.
-> [!NOTE]
-> V1.0 - 
-> 29/05/2024 - 
-> Roicobraz
 
 _Développé en **PHP 7.4** avec Wordpress **6.5.3** et Advanced Custom Fields PRO **6.3.0.1**_
 
@@ -60,3 +56,8 @@ Pour ces deux méthodes le 1<sup>er</sup> correspond au texte du bouton d'ajout,
 ## V1.3
 - Ajout d'une interface graphique afin de de ne plus passer par du code mais uniquement par des inputs pour tout paramétrer
 ...
+
+> [!NOTE]
+> V1.0 - 
+> 29/05/2024 - 
+> Roicobraz
