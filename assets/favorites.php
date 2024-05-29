@@ -84,7 +84,7 @@ abstract class favorite extends depedence
 			$this->fav_msg_format = $format; 
 		}	
 	
-	private function save_format($content_post, $idpost) {
+	public function save_format($content_post, $idpost) {
 		try {
 			if($this->getFav_msg_format_type() == 'auto')
 			{				
@@ -192,7 +192,7 @@ abstract class favorite extends depedence
 				$this->fav_msg_title_class = $class; 
 			}
 	
-		private function save_title($content_post)
+		public function save_title($content_post)
 		{
 			$this->setFav_msg_title('<h'.$this->getFav_msg_title_height().' class="'.$this->getFav_msg_title_class().'">'.$content_post->post_title.'</h'.$this->getFav_msg_title_height().'>');
 
@@ -201,10 +201,33 @@ abstract class favorite extends depedence
 
 	// {------ LINK ------ //
 		private $fav_msg_link;
+			public function getFav_msg_link() {
+				return($this->fav_msg_link);
+			}	
+	
+			private function setFav_msg_link($link) {
+				$this->fav_msg_link = $link;
+			}
+			
+			public function save_link($idpost, $content = 'En savoir plus') {
+				$this->setFav_msg_link('<div><a href="'.get_permalink($idpost).'">'.__($content).'</a></div>');
+			}
 	//}	
 	
 	// {------ THUMBNAIL ------ //
 		private $fav_msg_thumbnail;
+			public function getFav_msg_thumbnail() {
+				return($this->fav_msg_thumbnail);
+			}	
+	
+			private function setFav_msg_thumbnail($link) {
+				$this->fav_msg_thumbnail = $link;
+			}
+			
+			public function save_thumbnail($idpost) {
+				$this->setFav_msg_thumbnail(get_the_post_thumbnail($idpost));
+			}
+	
 	//}	
 	
 	// {------ CONTENT ------ //
@@ -242,7 +265,7 @@ abstract class favorite extends depedence
 				$this->fav_msg_content_type = $content; 
 			}
 	
-		private function save_content($content_post) {	
+		public function save_content($content_post) {	
 			try {
 				if($this->getFav_msg_content_type() == "excerpt")
 				{
@@ -264,9 +287,18 @@ abstract class favorite extends depedence
 			}
 		}
 
-	//}	
-
-
+	//}
+	
+	private $sc;
+		public function getSc()
+		{
+			return($this->sc);
+		}
+		
+		public function save_sc($string)
+		{
+			$this->sc = $string;
+		}	
 // }
 	
 	
@@ -287,19 +319,40 @@ abstract class favorite extends depedence
 			$this->fav_archive = $id;
 		}
 	
-	private function save_archive() {
+	public function save_archive($format = '') {
 		$code_html = '';
-
 		if($this->getFav_user()[0])
 		{
 			foreach($this->getFav_user()[0] as $idpost)
-			{
+			{	
 				$content_post = get_post($idpost);
+				
+				$this->save_title($content_post);
+				$this->save_content($content_post);
+				$this->save_thumbnail($idpost);
+				$this->save_link($idpost);
+				$this->save_sc('[favorites id="'.$idpost.'"]');
 
-				$code_html .= $this->save_title($content_post);
-				$code_html .= $this->save_content($content_post);
-				$code_html .= $this->save_format($content_post, $idpost);
-			}				
+				if($format !== '')
+				{
+					$code_html .= $format;
+				}
+				else
+				{ 
+					if ($idpost != '')
+					{
+						$code_html .= $this->getFav_msg_title();
+						$code_html .= $this->getFav_msg_thumbnail();
+						$code_html .= $this->getSc();	
+						$code_html .= $this->getFav_msg_content();
+						$code_html .= $this->getFav_msg_link();
+					}
+					else
+					{
+						$code_html .=$this->getFav_void();
+					}
+				}
+			}
 		}
 		else
 		{
@@ -313,20 +366,9 @@ abstract class favorite extends depedence
 	* public string fav_sc_list(void)
 	*/
 	public function fav_sc_list() {
-		add_shortcode($this->getField(), 
-		  	function ()
-			{
-				try
-				{
-					$code_html = $this->save_archive();
-				}
-				catch (\Exception $e) 
-				{
-					$this->error($e->getMessage());
-					return;
-				}
-				
-				return(do_shortcode($code_html));
+		add_shortcode($this->getField(),  function () 
+			{	
+				return(do_shortcode($this->save_archive()));
 			}
 		);
 	}
@@ -334,17 +376,7 @@ abstract class favorite extends depedence
 	public function fav_hook_list() {
 		add_action('fav_test', function ()
 			{
-				try
-				{
-					$code_html = $this->save_archive();
-				}
-				catch (\Exception $e) 
-				{
-					$this->error($e->getMessage());
-					return;
-				}
-				
-				return(do_shortcode($code_html));
+				return(do_shortcode($this->save_archive()));
 			}
 		);
 	}

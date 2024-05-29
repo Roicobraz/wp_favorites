@@ -28,6 +28,9 @@ $favorites->setFav_user(get_user_meta( get_current_user_id(), $favorites->getFie
 // ajouter un hook pour le listing
 // shortcode à placer où on veut
 
+
+
+
 /**
 * Message s'il n'y a aucun favoris 
 */
@@ -57,13 +60,18 @@ $favorites->setFav_msg_content_type('content');
 */
 //$favorites->setFav_msg_format('format');
 
-
-//$favorites->fav_hook_list();
+//$format = $favorites->getFav_msg_title().
+//	$favorites->getFav_msg_thumbnail().'hruqibglierbgqlbvfqhcbjerh'.
+//	$favorites->getSc().
+//	$favorites->getFav_msg_content().
+//	$favorites->getFav_msg_link();
+$favorites->fav_hook_list(/*$format*/);
 
 /**
 * Initialisation du shortcode
 */
-echo($favorites->fav_sc_list());
+
+//$favorites->fav_sc_list($format);
 // }
 
 // -------{INITIALISATION DU BOUTTON------- //
@@ -88,8 +96,9 @@ $favorites->setFav_sc_name('favorites');
 * initialisation du bouton 
 * 1er param contenu du bouton d'ajout
 * 2eme param contenu du bouton de suppression
-* pour l'avoir en shortcode 3ème param = shortcode ou sc
-* sinon auto ou void
 */
-$favorites->fav_button('&#x2B50;', '&#x1F6AB;', 'sc');
+$favorites->fav_button_sc('&#x2B50;', '&#x1F6AB;'); // version shortcode
+$favorites->fav_button('&#x2B50;', '&#x1F6AB;'); // version filter
 // }
+
+//$favorites->fav_sc_list();

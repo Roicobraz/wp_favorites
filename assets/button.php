@@ -102,7 +102,7 @@ class button extends favorite
 	* Affichage des boutons en fonction de la présence ou non du post dans les favoris
 	* public string fav_button(string, string, string)
 	*/
-	public function fav_button($btn_content_add = '', $btn_content_del = '', $type = 'auto') {
+	public function fav_button($btn_content_add = '', $btn_content_del = '') {
 		if($btn_content_add)
 		{
 			$this->setFav_btn_content_add($btn_content_add);
@@ -118,88 +118,122 @@ class button extends favorite
 			$this->setFav_type_post(array($this->getFav_type_post()));
 		}
 		
-		if ($type == 'auto')
-		{			
-			add_filter( 'the_content', 
-				function ($content) 
-				{
-					if(in_the_loop() || !is_main_query())
-					{					
-						foreach ($this->getFav_type_post() as $post_type)
+		add_filter( 'the_content', 
+			function ($content) 
+			{
+				if(in_the_loop() || !is_main_query())
+				{					
+					foreach ($this->getFav_type_post() as $post_type)
+					{
+						if( $post_type == get_post_type() )
 						{
-							if( $post_type == get_post_type() )
+							if ($this->fav_is_favorite(get_the_ID()))
 							{
-								if ($this->fav_is_favorite(get_the_ID()))
-								{
-									return($this->fav_form_del().$content);
-								}
-								else
-								{	
-									return($this->fav_form_add().$content);
-								}
+								return($this->fav_form_del().$content);
 							}
 							else
+							{	
+								return($this->fav_form_add().$content);
+							}
+						}
+						else
+						{
+							return($content);
+						}
+					}
+				}
+				else
+				{
+					return($content);
+				}
+			},
+			99,
+			1
+		);
+	}	
+	
+	/**
+	* Affichage des boutons en fonction de la présence ou non du post dans les favoris
+	* public string fav_button(string, string, string)
+	*/
+	public function fav_button_sc($btn_content_add = '', $btn_content_del = '') {
+		if($btn_content_add)
+		{
+			$this->setFav_btn_content_add($btn_content_add);
+		}	
+		
+		if($btn_content_del)
+		{
+			$this->setFav_btn_content_del($btn_content_del);
+		}
+
+		if(!is_array($this->getFav_type_post()))
+		{
+			$this->setFav_type_post(array($this->getFav_type_post()));
+		}
+			
+		add_shortcode($this->fav_sc_name, function ($atts) 
+			{
+				$atts = shortcode_atts( array('id' => '',), $atts, $this->fav_sc_name );
+						
+				if(in_the_loop() || !is_main_query())
+				{					
+					if(!is_array($this->getFav_type_post()))
+					{				
+						foreach ($this->getFav_type_post() as $post_type)
+						{
+							if( $post_type == get_post_type() || $atts['id'] != '')
 							{
-								return($content);
+								return($this->fav_form_add($atts['id']));
 							}
 						}
 					}
 					else
 					{
-						return($content);
-					}
-				},
-				99,
-				1
-			);
-		}
-		else if ($type == 'shortcode' || $type == 'sc')
-		{		
-			add_shortcode($this->fav_sc_name, function () 
-				{
-					if(in_the_loop() || !is_main_query())
-					{					
-						if(!is_array($this->getFav_type_post()))
-						{				
-							foreach ($this->getFav_type_post() as $post_type)
-							{
-								if( $post_type == get_post_type() )
-								{
-									return($this->fav_form_add());
-								}
-							}
-						}
-						else
+						foreach ($this->getFav_type_post() as $post_type)
 						{
-							foreach ($this->getFav_type_post() as $post_type)
+							if( $post_type == get_post_type() || $atts['id'] != '')
 							{
-								if( $post_type == get_post_type() )
+								if ($this->fav_is_favorite(get_the_ID()) || $this->fav_is_favorite($atts['id']))
 								{
-									if ($this->fav_is_favorite(get_the_ID()))
-									{
-										return($this->fav_form_del());
-									}
-									else
-									{	
-										return($this->fav_form_add());
-									}
+									return($this->fav_form_del($atts['id']));
+								}
+								else
+								{	
+									return($this->fav_form_add($atts['id']));
 								}
 							}
 						}
 					}
 				}
-			);
-		}
+			}
+		);
 	}
 	
 	/**
 	* Formulaire du bouton d'ajout 
-	* private string fav_form_add(void)
+	* private string fav_form_add(string = "")
 	*/
-	private function fav_form_add() {
+	private function fav_form_add($id = '') {
+		if (get_permalink($id) != get_permalink())
+		{
+			$redirect_link = '<input type="link" hidden="true" name="fav" value="'.get_permalink().'">';
+		}		
+		else
+		{
+			$redirect_link = '';
+		}
+		
+		if($id == '') 
+		{ 
+			$id = get_the_id();
+		}
+		
+		$link = get_permalink($id).'?'.$this->getFav_param();
 		return('
-		<form action="'.get_permalink().'?'.$this->getFav_param().'=true" method="post">
-			<input type="number" hidden="true" name="fav" value="'.get_the_id().'">
+		<form action="'.$link.'=true" method="post">
+			'.$redirect_link.'
+			<input type="number" hidden="true" name="fav" value="'.$id.'">
 			<button type="submit">'.__($this->getFav_btn_content_add(), $this->getDomain_name()).'</button>
 		</form>
 		');
@@ -207,12 +241,28 @@ class button extends favorite
 	
 	/**
 	* Formulaire du bouton de suppression 
-	* private string fav_form_del(void)
+	* private string fav_form_del(string = "")
 	*/
-	private function fav_form_del() {
+	private function fav_form_del($id = '') {
+		if (get_permalink($id) != get_permalink())
+		{
+			$redirect_link = '<input type="link" hidden="true" name="url" value="'.get_permalink().'">';
+		}		
+		else
+		{
+			$redirect_link = '';
+		}
+		
+		if($id == '') 
+		{ 
+			$id = get_the_id();
+		}
+		if($id == '') { $id = get_the_id();}
+		$link = get_permalink($id).'?'.$this->getFav_param();
 		return('
-		<form action="'.get_permalink().'?'.$this->getFav_param().'=false" method="post">
-			<input type="number" hidden="true" name="fav" value="'.get_the_id().'">
+		<form action="'.$link.'=false" method="post">
+			'.$redirect_link.'
+			<input type="number" hidden="true" name="fav" value="'.$id.'">
 			<button type="submit">'.__($this->getFav_btn_content_del(), $this->getDomain_name()).'</button>
 		</form>
 		');
@@ -239,12 +289,20 @@ class button extends favorite
 				if ($_GET[$this->getFav_param()] == 'true')
 				{				
 					$this->fav_action_button_add($_POST['fav']);
-					wp_redirect(str_replace('?'.$this->getFav_param().'=true', '', $current_url));
+					$bool = 'true';
 				}
 				else
 				{			
 					$this->fav_action_button_del($_POST['fav']);
-					wp_redirect(str_replace('?'.$this->getFav_param().'=false', '', $current_url));
+					$bool = 'false';
+				}	
+				if (isset($_POST['url']))
+				{
+					wp_redirect($_POST['url']);
+				}
+				else
+				{
+					wp_redirect(str_replace('?'.$this->getFav_param().'='.$bool, '', $current_url));
 				}
 	   		}
 		}, 99);
