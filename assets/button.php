@@ -14,11 +14,12 @@ class button extends favorite
 	private $fav_btn_class;
 	private $fav_param = 'add_favorite';
 	private $fav_type_post = 'offer';
+	private $fav_sc_name = 'favorites';
 	
 	// Methods
 	public function __construct() {
-		if ($this->getACFpro())
-		{
+		if ($this->getACFpro())	
+		{	
 			$this->fav_action();	
 		}
 	}
@@ -64,6 +65,22 @@ class button extends favorite
 	
 	public function setFav_type_post($content) {
 		$this->fav_type_post = $content;
+	}	
+	
+	public function getFav_sc_name() {
+		return($this->fav_sc_name);
+	}	
+	
+	public function setFav_sc_name($content) {
+		$this->fav_sc_name = $content;
+	}	
+	
+	public function getFav_sc_content() {
+		return($this->fav_sc_content);
+	}	
+	
+	public function setFav_sc_content($content) {
+		$this->fav_sc_content = $content;
 	}
 	
 	
@@ -73,7 +90,7 @@ class button extends favorite
 	*/
 	public function fav_is_favorite($id) {
 		if (!empty(get_field($this->getField(), 'user_'.get_current_user_id())))
-		{
+		{ 
 			if(in_array(get_permalink($id), get_field($this->getField(), 'user_'.get_current_user_id())))
 			{
 				return(true);
@@ -83,9 +100,9 @@ class button extends favorite
 
 	/**
 	* Affichage des boutons en fonction de la présence ou non du post dans les favoris
-	* public string fav_button(string, string)
+	* public string fav_button(string, string, string)
 	*/
-	public function fav_button($btn_content_add = '', $btn_content_del = '') {
+	public function fav_button($btn_content_add = '', $btn_content_del = '', $type = 'auto') {
 		if($btn_content_add)
 		{
 			$this->setFav_btn_content_add($btn_content_add);
@@ -96,41 +113,83 @@ class button extends favorite
 			$this->setFav_btn_content_del($btn_content_del);
 		}
 
-		add_filter( 'the_content', 
-			function ($content) 
-			{
-				if(in_the_loop() || !is_main_query())
+		if(!is_array($this->getFav_type_post()))
+		{
+			$this->setFav_type_post(array($this->getFav_type_post()));
+		}
+		
+		if ($type == 'auto')
+		{			
+			add_filter( 'the_content', 
+				function ($content) 
 				{
-
-					if(is_array($this->getFav_type_post()))
-					{
+					if(in_the_loop() || !is_main_query())
+					{					
 						foreach ($this->getFav_type_post() as $post_type)
 						{
 							if( $post_type == get_post_type() )
 							{
-								return($this->fav_form().$content);
+								if ($this->fav_is_favorite(get_the_ID()))
+								{
+									return($this->fav_form_del().$content);
+								}
+								else
+								{	
+									return($this->fav_form_add().$content);
+								}
+							}
+							else
+							{
+								return($content);
 							}
 						}
 					}
 					else
 					{
-						if( $this->getFav_type_post() == get_post_type() )
-						{
-							if ($this->fav_is_favorite(get_the_ID()))
+						return($content);
+					}
+				},
+				99,
+				1
+			);
+		}
+		else if ($type == 'shortcode' || $type == 'sc')
+		{		
+			add_shortcode($this->fav_sc_name, function () 
+				{
+					if(in_the_loop() || !is_main_query())
+					{					
+						if(!is_array($this->getFav_type_post()))
+						{				
+							foreach ($this->getFav_type_post() as $post_type)
 							{
-								return($this->fav_form_del().$content);
+								if( $post_type == get_post_type() )
+								{
+									return($this->fav_form_add());
+								}
 							}
-							else
-							{	
-								return($this->fav_form_add().$content);
+						}
+						else
+						{
+							foreach ($this->getFav_type_post() as $post_type)
+							{
+								if( $post_type == get_post_type() )
+								{
+									if ($this->fav_is_favorite(get_the_ID()))
+									{
+										return($this->fav_form_del());
+									}
+									else
+									{	
+										return($this->fav_form_add());
+									}
+								}
 							}
 						}
 					}
 				}
-			},
-			99,
-			1
-		);
+			);
+		}
 	}
 	
 	/**
@@ -141,7 +200,7 @@ class button extends favorite
 		return('
 		<form action="'.get_permalink().'?'.$this->getFav_param().'=true" method="post">
 			<input type="number" hidden="true" name="fav" value="'.get_the_id().'">
-			<button type="submit">'.__($this->getFav_btn_content_add()).'</button>
+			<button type="submit">'.__($this->getFav_btn_content_add(), $this->getDomain_name()).'</button>
 		</form>
 		');
 	}
@@ -154,7 +213,7 @@ class button extends favorite
 		return('
 		<form action="'.get_permalink().'?'.$this->getFav_param().'=false" method="post">
 			<input type="number" hidden="true" name="fav" value="'.get_the_id().'">
-			<button type="submit">'.__($this->getFav_btn_content_del()).'</button>
+			<button type="submit">'.__($this->getFav_btn_content_del(), $this->getDomain_name()).'</button>
 		</form>
 		');
 	}
@@ -167,7 +226,16 @@ class button extends favorite
 		add_action( 'get_header', function () {		
 			if (isset($_GET[$this->getFav_param()])) 
 			{	
-				$current_url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+				if ($_SERVER['HTTPS'] == 'on')
+				{
+					$http_protocol = "https://";
+				}
+				else
+				{
+					$http_protocol = "http://";
+				}
+				$current_url = "$http_protocol$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
 				if ($_GET[$this->getFav_param()] == 'true')
 				{				
 					$this->fav_action_button_add($_POST['fav']);
@@ -211,7 +279,7 @@ class button extends favorite
 				{
 					if(!update_field( $this->getField(), $this->getFav_user()[0], 'user_'.get_current_user_id()))
 					{
-						throw new \Exception(__("Erreur d'ajout de favoris."));	
+						throw new \Exception(__("Erreur d'ajout de favoris.", $this->getDomain_name()));	
 					}
 				}
 			}		
@@ -249,7 +317,7 @@ class button extends favorite
 				{
 					if(!update_field( $this->getField(), $this->getFav_user()[0], 'user_'.get_current_user_id()))
 					{
-						throw new \Exception(__("Erreur de suppression de favoris."));	
+						throw new \Exception(__("Erreur de suppression de favoris.", $this->getDomain_name()));	
 					}
 				}
 			}		

@@ -5,19 +5,35 @@ namespace favorite;
 abstract class depedence
 {
 	// Properties
+	private $domain_name;
 	
 	// Methods
 	public function __construct() {
 		$this->getACFpro();	
 	}
+		
+	/**
+	* Getter du nom de domaine 
+	* public string getDomain_name(void)
+	*/
+	protected function getDomain_name() {
+		return($this->domain_name);
+	}
 	
+	/**
+	* Setter du nom de domaine 
+	* public void setDomaine_name(string)
+	*/
+	protected function setDomaine_name($domain_name) {
+		$this->domain_name = $domain_name;
+	}
 	
 	/**
 	* Vérification de la présence d'ACF Pro
 	* protected bool getACFpro(void)
 	*/
 	protected function getACFpro() {
-		try 
+		try
 		{
 			if ( !is_plugin_active('advanced-custom-fields-pro/acf.php') )
 			{
@@ -39,28 +55,11 @@ abstract class depedence
         echo("<code><p>".$msgError."</p></code>");
     }
 	
-	public function fav_block() {
-		if( function_exists('acf_register_block_type') ) 
-		{
-			add_action('acf/init', function () {
-				acf_register_block_type(array(
-					'name'              => 'favorites',
-					'title'             => __('favorites'),
-					'description'       => __('A favorite block.'),
-					'render_template'   => '../include/block_list_favorites.php',
-					'category'          => 'common',
-					'icon'              => 'leftright',
-					'keywords'          => array( 'favorites'),
-				));
-			});
-		}
-	}
-	
-	public function fav_shortcode() {
-		add_shortcode('test', function () 
-		{
-			$code_html = "test";
-			return($code_html);
-		});
+	/**
+	* str_contains qui est non disponible en-dessous de la 8.0 de php
+	* protected string str_contains string, string
+	*/
+	protected function str_contains($haystack, $needle) {
+        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
 	}
 }
