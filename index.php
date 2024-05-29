@@ -24,20 +24,13 @@ $favorites->setFav_user(get_user_meta( get_current_user_id(), $favorites->getFie
 
 // -------{TEST PAGE FAVORIES------- //
 
-// déclarer une page où mettre son listing des favoris
-// ajouter un hook pour le listing
-// shortcode à placer où on veut
-
-
-
-
 /**
 * Message s'il n'y a aucun favoris 
 */
 $favorites->setFav_void('test void favorites');
 
 /**
-* Taille du <h> pour les titre des posts
+* Taille du <h> pour les titres des posts
 */
 $favorites->setFav_msg_title_height('2');
 
@@ -55,23 +48,11 @@ $favorites->setFav_msg_content_type('content');
 * Ajout de classes CSS aux titres 
 */
 //$favorites->setFav_msg_title_class('text-primary');
-/**
-* Contenu de l'affichage personnalisé 
-*/
-//$favorites->setFav_msg_format('format');
-
-//$format = $favorites->getFav_msg_title().
-//	$favorites->getFav_msg_thumbnail().'hruqibglierbgqlbvfqhcbjerh'.
-//	$favorites->getSc().
-//	$favorites->getFav_msg_content().
-//	$favorites->getFav_msg_link();
-$favorites->fav_hook_list(/*$format*/);
 
 /**
 * Initialisation du shortcode
 */
-
-//$favorites->fav_sc_list($format);
+$favorites->fav_sc_list();
 // }
 
 // -------{INITIALISATION DU BOUTTON------- //
@@ -101,4 +82,10 @@ $favorites->fav_button_sc('&#x2B50;', '&#x1F6AB;'); // version shortcode
 $favorites->fav_button('&#x2B50;', '&#x1F6AB;'); // version filter
 // }
 
-//$favorites->fav_sc_list();
+
+/**
+* Contenu de l'affichage personnalisé 
+*/
+//$favorites->setFav_msg_format('format');
+
+//$favorites->fav_hook_list();

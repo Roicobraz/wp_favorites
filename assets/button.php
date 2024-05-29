@@ -234,7 +234,7 @@ class button extends favorite
 		<form action="'.$link.'=true" method="post">
 			'.$redirect_link.'
 			<input type="number" hidden="true" name="fav" value="'.$id.'">
-			<button type="submit">'.__($this->getFav_btn_content_add(), $this->getDomain_name()).'</button>
+			<button class="'.$this->getFav_btn_class().'" type="submit">'.__($this->getFav_btn_content_add(), $this->getDomain_name()).'</button>
 		</form>
 		');
 	}
@@ -263,7 +263,7 @@ class button extends favorite
 		<form action="'.$link.'=false" method="post">
 			'.$redirect_link.'
 			<input type="number" hidden="true" name="fav" value="'.$id.'">
-			<button type="submit">'.__($this->getFav_btn_content_del(), $this->getDomain_name()).'</button>
+			<button class="'.$this->getFav_btn_class().'" type="submit">'.__($this->getFav_btn_content_del(), $this->getDomain_name()).'</button>
 		</form>
 		');
 	}
