@@ -29,7 +29,8 @@ Dans le cas où il y a la nécessité de modifier l'affichage des posts dans la 
 ``$code_html .= $this->getFav_msg_thumbnail();``  
 ``$code_html .= $this->getSc();``  
 ``$code_html .= $this->getFav_msg_content();``  
-``code_html .= $this->getFav_msg_link();``  
+``$code_html .= $this->getFav_msg_link();``  
+
 _La fonctionnalité seras plus simplifié dans le V1.2_
 
 ### Bouton d'ajout/suppression de favoris
