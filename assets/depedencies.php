@@ -5,7 +5,7 @@ namespace favorite;
 abstract class depedence
 {
 	// Properties
-	private $domain_name;
+	private $domain_name = 'favorites';
 	
 	// Methods
 	public function __construct() {
