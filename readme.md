@@ -26,7 +26,6 @@ Dans le cas où il y a la nécessité de modifier l'affichage des posts dans la 
 ``$code_html .= $this->getSc();``  
 ``$code_html .= $this->getFav_msg_content();``  
 ``$code_html .= $this->getFav_msg_link();``  
-
 _La fonctionnalité seras plus simplifié dans le V1.2_
 
 ### Bouton d'ajout/suppression de favoris
@@ -45,10 +44,12 @@ Le bouton peut-être afficher soit avec un ``add_filter(the_content)`` soit avec
 - Pour le **shortcode** il faut utiliser la méthode ``fav_button_sc``
 - Pour le **add_filter()** on utilise la méthode ``fav_button``
 
-Pour ces deux méthodes le 1<sup>er</sup> correspond au texte du bouton d'ajout, et le 2<sup>nd</sup> correspond au texte du bouton de suppression.
+Pour ces deux méthodes le 1<sup>er</sup> paramètre correspond au texte du bouton d'ajout, et le 2<sup>nd</sup> paramètre correspond au texte du bouton de suppression.
 
 
 # Prochainement
+## V1.0.1
+- Afficher un message lorsqu'aucun utilisateur n'est connecté.
 ## V1.1
 - Pouvoir ajouter des classes aux liens, miniatures et contenu du post tout comme le titre
 ## V1.2
