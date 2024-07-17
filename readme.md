@@ -9,6 +9,11 @@ Seul le fichier index.php a besoin d'être modifié pour paramétrer les favoris
 - [Wordpress 6.5.3](https://fr.wordpress.org/download/releases/)
 - [Advanced Custom Fields 6.3.0.1](https://www.advancedcustomfields.com/)
 
+> [!NOTE]
+> V1.0 - 
+> 29/05/2024 - 
+> Roicobraz
+
 ## Paramétrage 
 ### La page des favoris
 Dans le cas où il n'y a aucun favori le shortcode affiche un message qui peut-être initialisé avec la méthode ``setFav_void``.
@@ -59,8 +64,3 @@ Pour ces deux méthodes le 1<sup>er</sup> paramètre correspond au texte du bout
 ## V1.3
 - Ajout d'une interface graphique afin de de ne plus passer par du code mais uniquement par des inputs pour tout paramétrer
 ...
-
-> [!NOTE]
-> V1.0 - 
-> 29/05/2024 - 
-> Roicobraz
