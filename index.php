@@ -11,7 +11,10 @@ require_once('assets/button.php');
 require_once('assets/favorites_top.php');
 require_once('assets/depedencies.php');
 
-require_once('include/css/style.css');
+add_action( 'wp_enqueue_scripts', 'fav_styles' );
+function fav_styles() {
+    wp_enqueue_style( 'fav_style', get_theme_file_uri('/inc/favorite/include/css/style.css') );
+}
 
 use favorite\button;
 use favorite\depedence;
