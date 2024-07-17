@@ -16,7 +16,7 @@ abstract class depedence
 	* Getter du nom de domaine 
 	* public string getDomain_name(void)
 	*/
-	protected function getDomain_name() {
+	public function getDomain_name() {
 		return($this->domain_name);
 	}
 	
@@ -24,7 +24,7 @@ abstract class depedence
 	* Setter du nom de domaine 
 	* public void setDomaine_name(string)
 	*/
-	protected function setDomaine_name($domain_name) {
+	public function setDomaine_name($domain_name) {
 		$this->domain_name = $domain_name;
 	}
 	

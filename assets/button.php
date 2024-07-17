@@ -13,7 +13,7 @@ class button extends favorite
 	private $fav_btn_content_del = 'remove to favorites';
 	private $fav_btn_class;
 	private $fav_param = 'add_favorite';
-	private $fav_type_post = 'offer';
+	private $fav_type_post = 'product';
 	private $fav_sc_name = 'favorites';
 	
 	// Methods
@@ -211,7 +211,7 @@ class button extends favorite
 	}
 	
 	/**
-	* Formulaire du bouton d'ajout 
+	* Formulaire du bouton d'ajout
 	* private string fav_form_add(string = "")
 	*/
 	private function fav_form_add($id = '') {

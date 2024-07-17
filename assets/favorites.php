@@ -49,79 +49,6 @@ abstract class favorite extends depedence
 			$this->user_fav = $fav; 
 		}	
 	
-// {------ FORMAT ------ //
-	private $fav_msg_format_type = "auto";
-		/**
-		* Getter du type du format du post
-		* public string getFav_msg_format-type(void)
-		*/
-		public function getFav_msg_format_type() {	
-			return($this->fav_msg_format_type);
-		}
-
-		/**
-		* Setter du type du format du post
-		* public void setFav_msg_format-type(string)
-		*/
-		public function setFav_msg_format_type($format) {	
-			$this->fav_msg_format_type = $format; 
-		}	
-	
-	private $fav_msg_format;
-		/**
-		* Getter du format du post
-		* public string getFav_msg_format(void)
-		*/
-		public function getFav_msg_format() {	
-			return($this->fav_msg_format);
-		}
-
-		/**
-		* Setter du format du post
-		* public void setFav_msg_format(string)
-		*/
-		public function setFav_msg_format($format) {	
-			$this->fav_msg_format = $format; 
-		}	
-	
-	public function save_format($content_post, $idpost) {
-		try {
-			if($this->getFav_msg_format_type() == 'auto')
-			{				
-				$this->setFav_msg_format('
-				<article id="post-'.$idpost.'" class="post-'.$idpost.' page type-page status-publish hentry">'.
-					$this->getFav_msg_title().
-					get_the_post_thumbnail($idpost).
-					$this->getFav_msg_content().'
-					<div><a href="'.get_permalink($idpost).'">En savoir plus</a></div>
-				</article>');
-				return($this->getFav_msg_format());
-			}
-			else if ($this->getFav_msg_format_type() == 'manual')
-			{
-				if (empty($this->getFav_msg_format_type()))
-				{
-					throw new \Exception(__('Erreur : format entrée vide. <br>
-					Veuillez entrer le format à l\'aide de "$<i>objet</i>->setFav_msg_format(<i>code_html</i>);".', $this->getDomain_name()));
-				}
-				else
-				{
-					return($this->getFav_msg_format());
-				}
-			}
-			else 
-			{
-				throw new \Exception(__("Erreur du type de format entrée : ".$this->getFav_msg_format_type().". <br>Il doit être soit \"auto\"/null soit \"manual\".", $this->getDomain_name()));
-			}
-		}
-		catch (\Exception $e) 
-		{
-			$this->error($e->getMessage());
-			return;
-		}		
-	}
-//}	
-	
 // {------ MESSAGE ------ //
 	private $fav_void;
 		/**
@@ -134,7 +61,7 @@ abstract class favorite extends depedence
 
 		/**
 		* Setter du message d'absence de favoris
-		* public void setFav_user(string)
+		* public void setFav_void(string)
 		*/
 		public function setFav_void($msg_void) {	
 			$this->fav_void = $msg_void; 
@@ -225,7 +152,7 @@ abstract class favorite extends depedence
 			}
 			
 			public function save_thumbnail($idpost) {
-				$this->setFav_msg_thumbnail(get_the_post_thumbnail($idpost));
+				$this->setFav_msg_thumbnail(get_the_post_thumbnail($idpost, 'medium'));
 			}
 	
 	//}	
@@ -320,7 +247,7 @@ abstract class favorite extends depedence
 		}
 	
 	public function save_archive($format = '') {
-		$code_html = '';
+		$code_html = '<div class="fav_container">';
 		if($this->getFav_user()[0])
 		{
 			foreach($this->getFav_user()[0] as $idpost)
@@ -342,11 +269,13 @@ abstract class favorite extends depedence
 					if ($idpost != '')
 					{
 						// Si besoin modifiez le code si dessous ceci est l'affichage dans la page des favoris
+						$code_html .= "<article class='item_fav product_".$idpost."'>";
 						$code_html .= $this->getFav_msg_title();
 						$code_html .= $this->getFav_msg_thumbnail();
-						$code_html .= $this->getSc();	
+						$code_html .= $this->getSc();
 						$code_html .= $this->getFav_msg_content();
 						$code_html .= $this->getFav_msg_link();
+						$code_html .= "</article>";
 					}
 					else
 					{
@@ -359,6 +288,7 @@ abstract class favorite extends depedence
 		{
 			$code_html .=$this->getFav_void();
 		}
+		$code_html .= "</div>";
 		return($code_html);
 	}
 	
@@ -375,7 +305,7 @@ abstract class favorite extends depedence
 	}
 	
 	public function fav_hook_list() {
-		add_action('fav_test', function ()
+		add_action('fav_listing', function ()
 			{
 				return(do_shortcode($this->save_archive()));
 			}
